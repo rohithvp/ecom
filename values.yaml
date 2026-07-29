@@ -1,0 +1,25 @@
+replicaCount: 5
+
+image:
+  repository: nginx
+  tag: 1.27
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  host: app.example.com
+  path: /
+
+config:
+  APP_NAME: ecommerce
+  LOG_LEVEL: INFO
+
+secret:
+  username: admin
+  password: password123
