@@ -32,10 +32,6 @@ jobs:
           push: true
           tags: rohithvp/ecom:latest
 
-      - name: Save Docker Image
-        run: |
-          docker save ecom:${{ github.sha }} -o ecom.tar
-
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
