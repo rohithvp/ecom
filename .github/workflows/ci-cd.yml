@@ -30,10 +30,24 @@ jobs:
         with:
           context: .
           push: true
-          tags: rohithvp/ecom:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/ecom:${{ github.sha }}
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-image
-          path: ecom.tar
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Configure Kubernetes
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Helm Upgrade
+        run: |
+          helm upgrade --install ecom . \
+            --set image.repository=${{ secrets.DOCKER_USERNAME }}/ecom \
+            --set image.tag=${{ github.sha }}
+
+      - name: Verify Deployment
+        run: |
+          kubectl get pods
+          kubectl get svc
